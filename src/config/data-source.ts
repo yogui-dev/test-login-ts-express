@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import env from './env';
 import { User } from '../entities/User';
+import { Country } from '../entities/Country';
 
 const dbFile = path.isAbsolute(env.DB_PATH) ? env.DB_PATH : path.resolve(process.cwd(), env.DB_PATH);
 
@@ -16,7 +17,7 @@ if (!fs.existsSync(dir)) {
 export const AppDataSource = new DataSource({
   type: 'sqlite',
   database: dbFile,
-  entities: [User],
+  entities: [User, Country],
   synchronize: true, // Solo para dev
   logging: env.NODE_ENV !== 'production'
 });

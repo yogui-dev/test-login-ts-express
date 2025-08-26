@@ -3,6 +3,8 @@ import AppDataSource from '../config/data-source';
 import env from '../config/env';
 import userService from '../services/user.service';
 import { hashPassword } from '../utils/password';
+import { Country } from '../entities/Country';
+import { COUNTRIES } from './countries.data';
 
 async function run() {
   try {
@@ -15,6 +17,16 @@ async function run() {
       console.log('Created admin user:', { id: user.id, email: user.email });
     } else {
       console.log('Admin user already exists:', existing.email);
+    }
+
+    // Seed countries if empty
+    const countryRepo = AppDataSource.getRepository(Country);
+    const countryCount = await countryRepo.count();
+    if (countryCount === 0) {
+      await countryRepo.save(COUNTRIES.map(c => countryRepo.create(c)));
+      console.log(`Seeded ${COUNTRIES.length} countries.`);
+    } else {
+      console.log(`Countries already present: ${countryCount}`);
     }
 
     await AppDataSource.destroy();
